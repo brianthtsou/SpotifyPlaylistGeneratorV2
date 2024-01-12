@@ -1,6 +1,6 @@
-from flask import Flask, render_template, url_for, redirect
+from flask import Flask, render_template, url_for, redirect, session
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager, UserMixin
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_wtf import FlaskForm
 from flask_bcrypt import Bcrypt
 from wtforms import StringField, PasswordField, SubmitField
@@ -28,7 +28,7 @@ bcrypt = Bcrypt(app)
 # Loginmanager for logging users in and out
 login_manager = LoginManager()
 login_manager.init_app(app)
-
+login_manager.login_view = "login"
 
 
 class User(UserMixin, db.Model):
@@ -55,19 +55,11 @@ class LoginForm(FlaskForm):
 def load_user(user_id):
     return User.query.get(user_id)
 
+# @login_manager.user_loader
+# def load_user(user_id):
+#     return session.get(User, int(user_id))
 
 
-# # Loginmanager for logging users in and out
-# login_manager = LoginManager()
-# login_manager.init_app(app)
-
-
-# # Initialize app with extension
-# db.init_app(app)
-
-# # Create database within app context
-# with app.app_context():
-    # db.create_all()
 
 @app.route('/')
 def index():
@@ -76,20 +68,37 @@ def index():
 @app.route('/login', methods=["GET", "POST"])
 def login():
     form = LoginForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(username=form.username.data).first()
+        if user:
+            if bcrypt.check_password_hash(user.password, form.password.data):
+                login_user(user)
+                return redirect(url_for('dashboard'))
     return render_template('login.html', form=form)
+
+@app.route('/dashboard', methods=["GET", "POST"])
+@login_required
+def dashboard():
+    return render_template('dashboard.html')
+
+@app.route('/logout',  methods=["GET", "POST"])
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('login'))
 
 @app.route('/register', methods=["GET", "POST"])
 def register():
-    form = RegisterForm()
+    reg_form = RegisterForm()
 
-    if form.validate_on_submit():
-        hashed_password = bcrypt.generate_password_hash(form.password.data)
-        new_user = User(username=form.username.data, password=hashed_password)
+    if reg_form.validate_on_submit():
+        hashed_password = bcrypt.generate_password_hash(reg_form.password.data)
+        new_user = User(username=reg_form.username.data, password=hashed_password)
         db.session.add(new_user)
         db.session.commit()
-        return redirect(url_for(login))
+        return redirect(url_for('login'))
 
-    return render_template('register.html', form=form)
+    return render_template('register.html', form=reg_form)
 
 if __name__ == '__main__':
     app.run(debug=True)

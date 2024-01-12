@@ -9,6 +9,8 @@ from wtforms.validators import InputRequired, Length, ValidationError
 from dotenv import load_dotenv
 import os
 
+from modules.models import User
+from modules.db import db
 # create app
 app = Flask(__name__)
 
@@ -21,7 +23,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///database.db"
 app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
 
 # initialize sqlalchemy
-db = SQLAlchemy(app)
+db.init_app(app)
 
 bcrypt = Bcrypt(app)
 
@@ -29,12 +31,6 @@ bcrypt = Bcrypt(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "login"
-
-
-class User(UserMixin, db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(24), unique=True, nullable=False)
-    password = db.Column(db.String(24), nullable=False)
 
 class RegisterForm(FlaskForm):
     username = StringField('username', validators=[InputRequired(), Length(min=4, max=24)], render_kw={"Placeholder" : "Username"})

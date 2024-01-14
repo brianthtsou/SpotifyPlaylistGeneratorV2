@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_login import LoginManager
+from flask_migrate import Migrate
 
 from dotenv import load_dotenv
 import os
@@ -23,6 +24,8 @@ app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
 
 # initialize sqlalchemy
 db.init_app(app)
+
+migrate = Migrate(app,db,render_as_batch=True)
 
 # Loginmanager for logging users in and out
 login_manager = LoginManager()

@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, url_for, redirect
+from flask import Blueprint, render_template, url_for, redirect, session
 from flask_login import login_user, login_required, logout_user
 from flask_bcrypt import Bcrypt
 
@@ -17,14 +17,10 @@ def login():
         user = User.query.filter_by(username=form.username.data).first()
         if user:
             if bcrypt.check_password_hash(user.password, form.password.data):
+                session['id'] = user.id
                 login_user(user)
-                return redirect(url_for('auth.dashboard'))
+                return redirect(url_for('views.dashboard'))
     return render_template('login.html', form=form)
-
-@auth.route('/dashboard', methods=["GET", "POST"])
-@login_required
-def dashboard():
-    return render_template('dashboard.html')
 
 @auth.route('/logout',  methods=["GET", "POST"])
 @login_required

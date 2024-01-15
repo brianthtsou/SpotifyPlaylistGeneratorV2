@@ -18,3 +18,12 @@ class LoginForm(FlaskForm):
     username = StringField('username', validators=[InputRequired(), Length(min=4, max=24)], render_kw={"Placeholder" : "Username"})
     password = PasswordField('password', validators=[InputRequired(), Length(min=6, max=24)], render_kw={"Placeholder" : "Password"})
     submit = SubmitField("Login")   
+
+class SpotifyUserIDForm(FlaskForm):
+    spotify_user_id = StringField('spotify_user_id', validators=[InputRequired(), Length(max=30)], render_kw={"Placeholder" : "Spotify User ID"})
+    submit = SubmitField("Register Spotify User ID")
+
+    def validate_user_id(self, spotify_user_id):
+        existing_spotify_user_id = User.query.filter_by(spotify_user_id=spotify_user_id.data).first()
+        if existing_spotify_user_id:
+            raise ValidationError("That Spotify user ID is already registered with an account. Please try again.")

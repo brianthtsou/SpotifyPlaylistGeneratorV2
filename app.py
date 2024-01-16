@@ -21,6 +21,7 @@ load_dotenv()
 # tells flask-sqlalchemy what database to connect to
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///database.db"
 app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
+app.config['SESSION_COOKIE_NAME'] = 'Spotify Playlist Generator'
 
 # initialize sqlalchemy
 db.init_app(app)

@@ -1,4 +1,5 @@
 from flask import session, Blueprint, url_for, request, redirect, render_template
+from flask_login import login_required
 from .models import User
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
@@ -64,8 +65,23 @@ def get_top_tracks_and_artists(num, result):
     return final_list
 
 """
+Method to generate the list of seeds to be used in the recommendation function; seeds are pulled from the user's top tracks.
+***UNIMPLEMENTED SO FAR***
+"""
+def generate_seed_tracklist(sp):
+    seed_tracklist = [] #list to hold seeds for recommendation function
+    
+    # pulls 20 short term top tracks from spotify as json, use as recommend function seeds
+    result = sp.current_user_top_tracks(limit=5, offset=0, time_range="short_term")
+    for track in range(5):
+        track_id = result['items'][track]['id']
+        seed_tracklist.append(track_id)
+    return seed_tracklist
+
+"""
 Method for providing the redirect_uri route for the Spotify OAuth authentication object (created by create_spotify_auth()).
 """
+@login_required
 @spotify.route('/redirectpage')
 def redirect_page():
     sp_oauth = create_spotify_oauth()
@@ -78,6 +94,7 @@ def redirect_page():
 """
 Method that provides the route to access the Spotify website directly to authenticate the app's connection to Spotify.
 """
+@login_required
 @spotify.route('/spotify_login')
 def spotify_login():
     sp_oauth = create_spotify_oauth()
@@ -88,6 +105,7 @@ def spotify_login():
 Method that invokes get_top_tracks_and_artists() to retrieve and display user's most listened to tracks, with provided number of 
 tracks and scope.
 """
+@login_required
 @spotify.route('/get_top_tracks', methods=['GET'])
 def get_top_tracks(scope="", num=0):
     try:
@@ -113,6 +131,7 @@ def get_top_tracks(scope="", num=0):
 """
 Method to create an empty playlist on the user's Spotify account.
 """
+@login_required
 @spotify.route('/create_empty_playlist')
 def create_empty_playlist():
     try:
@@ -130,6 +149,7 @@ def create_empty_playlist():
 Method to generate a new playlist of songs on the user's Spotify account using the user's top listened to songs as 
 recommendation seeds.
 """
+@login_required
 @spotify.route('/create_discovery_playlist')
 def create_discovery_playlist():
     try:

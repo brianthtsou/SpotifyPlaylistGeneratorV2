@@ -20,6 +20,16 @@ def get_spotify_user_id():
     print(spotify_user_id)
     return spotify_user_id
 
+@spotify.route('/current_user_info')
+def get_current_user_info():
+    try:
+        token_info = get_token()
+    except:
+        print("User not logged in")
+        return redirect(url_for("spotify.spotify_login", _external=False))
+    sp = spotipy.Spotify(auth=token_info['access_token'])
+    return sp.me()["id"]
+
 """ 
 Method for creating Spotify OAuth Authentication Object. The scope defines what actions the app is allowed to take on a 
 user's Spotify account. 

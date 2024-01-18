@@ -11,6 +11,7 @@
             <li><a href="{{url_for('views.dashboard')}}">Dashboard</a></li>
             <li><a href="{{url_for('views.account_settings')}}">Account</a></li>
             <li><a href="{{url_for('spotify.spotify_login')}}">Spotify Login</a></li>
+            <li><a href="{{url_for('spotify.get_current_user_info')}}">Current User Info</a></li>
         </ul>
     </nav>
     {% block content %}{% endblock %}

@@ -1,4 +1,4 @@
-from flask import session, Blueprint, url_for, request, redirect, render_template
+from flask import session, Blueprint, url_for, request, redirect, render_template, current_app
 from flask_login import login_required
 from .models import User
 import spotipy
@@ -8,13 +8,17 @@ from dotenv import load_dotenv
 import time
 from datetime import date
 
+
 spotify = Blueprint('spotify', __name__)
 
 load_dotenv()
 
-user_id = session["id"]
-user = User.query.filter_by(id=user_id).first()
-spotify_user_id = user.spotify_user_id
+def get_spotify_user_id():
+    user_id = session["id"]
+    user = User.query.filter_by(id=user_id).first()
+    spotify_user_id = user.spotify_user_id
+    print(spotify_user_id)
+    return spotify_user_id
 
 """ 
 Method for creating Spotify OAuth Authentication Object. The scope defines what actions the app is allowed to take on a 
@@ -24,7 +28,8 @@ def create_spotify_oauth():
     return SpotifyOAuth(
         client_id=os.getenv("CLIENT_ID"),
         client_secret=os.getenv("CLIENT_SECRET"),
-        redirect_uri=url_for("redirectPage", _external=True),
+        redirect_uri=url_for("spotify.redirect_page", _external=True),
+        username=get_spotify_user_id(),
         scope=("user-library-read, playlist-modify-public, user-top-read")
     )
 
@@ -81,15 +86,15 @@ def generate_seed_tracklist(sp):
 """
 Method for providing the redirect_uri route for the Spotify OAuth authentication object (created by create_spotify_auth()).
 """
-@login_required
-@spotify.route('/redirectpage')
+
+@spotify.route('/redirect')
 def redirect_page():
     sp_oauth = create_spotify_oauth()
-    session.clear()
+    # session.clear()
     code = request.args.get('code')
     token_info = sp_oauth.get_access_token(code)
     session['token_info'] = token_info
-    return redirect(url_for("views.dashboard"), external=True)
+    return redirect(url_for("views.dashboard", external=True))
 
 """
 Method that provides the route to access the Spotify website directly to authenticate the app's connection to Spotify.
@@ -140,7 +145,7 @@ def create_empty_playlist():
         print("User not logged in")
         return redirect(url_for("spotify_login", _external=False))
     sp = spotipy.Spotify(auth=token_info['access_token'])
-    sp.user_playlist_create(spotify_user_id, "New Playlist", public=True, collaborative=False, description="blank")
+    sp.user_playlist_create(get_spotify_user_id(), "New Playlist", public=True, collaborative=False, description="blank")
     return None# render_template('playlistCreated.html')
 
 
@@ -159,7 +164,7 @@ def create_discovery_playlist():
         return redirect(url_for("spotify_login", _external=False))
     sp = spotipy.Spotify(auth=token_info['access_token'])
     today = str(date.today())
-    sp.user_playlist_create(spotify_user_id, f"Discovery - {today}", public=True, collaborative=False, description=f"{today}")
+    sp.user_playlist_create(get_spotify_user_id(), f"Discovery - {today}", public=True, collaborative=False, description=f"{today}")
 
     #gets newly created playlist (0 index is the playlist that was just created)
     discovery_playlist_id = sp.current_user_playlists(limit=1, offset=0)["items"][0]["id"]
@@ -183,6 +188,6 @@ def create_discovery_playlist():
         print(track_id)
     # TODO: need to store tracks in a list to be added
     #TODO: need to get playlist ID of newly created playlist, so can call user_playlist_add_tracks
-    sp.user_playlist_add_tracks(spotify_user_id, discovery_playlist_id, add_tracklist)
+    sp.user_playlist_add_tracks(get_spotify_user_id(), discovery_playlist_id, add_tracklist)
     #TODO: consolidate some of these actions into separate functions
     return None # render_template('playlistCreated.html')

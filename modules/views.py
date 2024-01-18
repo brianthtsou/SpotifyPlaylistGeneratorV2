@@ -8,6 +8,7 @@ views = Blueprint('views', __name__)
 
 @views.route('/')
 def index():
+    session.clear()
     return render_template('index.html')
 
 @views.route('/dashboard', methods=["GET", "POST"])

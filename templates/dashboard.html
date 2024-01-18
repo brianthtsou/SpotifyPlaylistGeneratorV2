@@ -3,8 +3,10 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
-    <h1>Hello, you are logged in! </h1>
-    <h3>Your Spotify User ID: {{spotify_user_id}}</h3>
+    <div>
+        <h1>Hello, you are logged in! </h1>
+        <h3>Your Spotify User ID: {{spotify_user_id}}</h3>
+    </div>
     <a href="{{url_for('auth.logout')}}">
         <button>Logout</button>
     </a>

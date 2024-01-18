@@ -20,8 +20,8 @@ def get_spotify_user_id():
     print(spotify_user_id)
     return spotify_user_id
 
-@spotify.route('/current_user_info')
-def get_current_user_info():
+@spotify.route('/current_user_sp_id')
+def get_current_user_sp_id():
     try:
         token_info = get_token()
     except:
@@ -39,7 +39,7 @@ def create_spotify_oauth():
         client_id=os.getenv("CLIENT_ID"),
         client_secret=os.getenv("CLIENT_SECRET"),
         redirect_uri=url_for("spotify.redirect_page", _external=True),
-        username=get_spotify_user_id(),
+        username="placeholder",
         scope=("user-library-read, playlist-modify-public, user-top-read")
     )
 
@@ -155,7 +155,7 @@ def create_empty_playlist():
         print("User not logged in")
         return redirect(url_for("spotify_login", _external=False))
     sp = spotipy.Spotify(auth=token_info['access_token'])
-    sp.user_playlist_create(get_spotify_user_id(), "New Playlist", public=True, collaborative=False, description="blank")
+    sp.user_playlist_create(get_current_user_sp_id(), "New Playlist", public=True, collaborative=False, description="blank")
     return None# render_template('playlistCreated.html')
 
 
@@ -174,7 +174,7 @@ def create_discovery_playlist():
         return redirect(url_for("spotify_login", _external=False))
     sp = spotipy.Spotify(auth=token_info['access_token'])
     today = str(date.today())
-    sp.user_playlist_create(get_spotify_user_id(), f"Discovery - {today}", public=True, collaborative=False, description=f"{today}")
+    sp.user_playlist_create(get_current_user_sp_id(), f"Discovery - {today}", public=True, collaborative=False, description=f"{today}")
 
     #gets newly created playlist (0 index is the playlist that was just created)
     discovery_playlist_id = sp.current_user_playlists(limit=1, offset=0)["items"][0]["id"]
@@ -198,6 +198,6 @@ def create_discovery_playlist():
         print(track_id)
     # TODO: need to store tracks in a list to be added
     #TODO: need to get playlist ID of newly created playlist, so can call user_playlist_add_tracks
-    sp.user_playlist_add_tracks(get_spotify_user_id(), discovery_playlist_id, add_tracklist)
+    sp.user_playlist_add_tracks(get_current_user_sp_id(), discovery_playlist_id, add_tracklist)
     #TODO: consolidate some of these actions into separate functions
     return None # render_template('playlistCreated.html')

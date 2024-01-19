@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}Your Top Tracks{% endblock %}
+
+{% block content %}
+    <div>
+        <h1>Hello, you are logged in! </h1>
+        <h3>Your Spotify User ID: {{spotify_user_id}}</h3>
+    </div>
+    <a href="{{url_for('auth.logout')}}">
+        <button>Logout</button>
+    </a>
+    <ol>
+        {% for track, artists in tracks.items() %}
+            <li><b>{{ track }}</b> - {{ artists }}</li>
+        {% endfor %}
+    </ol>
+    <div class="slidecontainer">
+        <input type="range" min="1" max="3" value="2" class="slider" id="scope-slider">
+        <div id="slider-output"></div>
+    </div>
+{% endblock %}
+

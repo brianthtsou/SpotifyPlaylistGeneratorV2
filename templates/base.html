@@ -12,8 +12,10 @@
             <li><a href="{{url_for('views.account_settings')}}">Account</a></li>
             <li><a href="{{url_for('spotify.spotify_login')}}">Spotify Login</a></li>
             <li><a href="{{url_for('spotify.get_current_user_sp_id')}}">Current User Info</a></li>
+            <li><a href="{{url_for('spotify.get_top_tracks')}}">Your Top Tracks</a></li>
         </ul>
     </nav>
     {% block content %}{% endblock %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>

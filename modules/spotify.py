@@ -39,7 +39,7 @@ def create_spotify_oauth():
         client_id=os.getenv("CLIENT_ID"),
         client_secret=os.getenv("CLIENT_SECRET"),
         redirect_uri=url_for("spotify.redirect_page", _external=True),
-        username="placeholder",
+        username=get_spotify_user_id(),
         scope=("user-library-read, playlist-modify-public, user-top-read")
     )
 
@@ -122,26 +122,26 @@ tracks and scope.
 """
 @login_required
 @spotify.route('/get_top_tracks', methods=['GET'])
-def get_top_tracks(scope="", num=0):
+def get_top_tracks(scope="short_term", num=10):
     try:
         token_info = get_token()
     except:
         print("User not logged in")
-        return redirect(url_for("spotify_login", _external=False))
+        return redirect(url_for("spotify.spotify_login", _external=False))
     sp = spotipy.Spotify(auth=token_info['access_token'])
     global current_top_track_scope
 
     # num = 5 by default, 10/15/20 by user selection
     # scope = short_term by default, medium_term/long_term by user selection
-    num = int(request.args.get('num'))
-    scope = str(request.args.get('scope'))
+    num = 10
+    scope = "short_term"
     current_top_track_scope = scope
 
     # retrieve (limit) number of top tracks as a json, stored in result
     result = sp.current_user_top_tracks(limit=num, offset=0, time_range=scope)
     
     final_list = get_top_tracks_and_artists(num=num, result=result) # for storing final 'song' : 'artist' dictionary
-    return render_template('dashboard.html', tracks = final_list, current_scope = scope)
+    return render_template('your_top_tracks.html', tracks = final_list, current_scope = scope)
 
 """
 Method to create an empty playlist on the user's Spotify account.

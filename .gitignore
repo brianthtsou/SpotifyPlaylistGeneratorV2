@@ -4,6 +4,7 @@
 notes.txt
 .cache*
 .cache-placeholder
+.cache-*
 
 ### Flask ###
 instance/*

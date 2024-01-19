@@ -16,8 +16,13 @@
         {% endfor %}
     </ol>
     <div class="slidecontainer">
-        <input type="range" min="1" max="3" value="2" class="slider" id="scope-slider">
-        <div id="slider-output"></div>
+        <form action="{{ url_for('spotify.get_top_tracks')}}" method="post">
+            <input type="range" min="1" max="3" value="1" class="slider" name="scope-slider" id="scope-slider">
+            <div id="scope-slider-output"></div>
+            <input type="range" min="5" max="20" value="10" class="slider" name="num-slider" id="num-slider">
+            <div id="num-slider-output"></div>
+            <input type="submit">
+        </form>
     </div>
 {% endblock %}
 

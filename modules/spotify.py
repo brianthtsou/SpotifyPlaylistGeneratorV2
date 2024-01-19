@@ -121,7 +121,7 @@ Method that invokes get_top_tracks_and_artists() to retrieve and display user's 
 tracks and scope.
 """
 @login_required
-@spotify.route('/get_top_tracks', methods=['GET'])
+@spotify.route('/get_top_tracks', methods=['GET', 'POST'])
 def get_top_tracks(scope="short_term", num=10):
     try:
         token_info = get_token()
@@ -133,9 +133,23 @@ def get_top_tracks(scope="short_term", num=10):
 
     # num = 5 by default, 10/15/20 by user selection
     # scope = short_term by default, medium_term/long_term by user selection
-    num = 10
-    scope = "short_term"
-    current_top_track_scope = scope
+
+    scope_dict = {
+        1 : "short_term",
+        2 : "medium_term",
+        3 : "long_term"
+    }
+    
+    if request.method == 'POST':
+        scope = scope_dict[int(request.form['scope-slider'])]
+        num = int(request.form['num-slider'])
+    else:
+        num = 10
+        scope = "short_term"
+        current_top_track_scope = scope
+
+    # num = int(request.args.get('num'))
+    # scope = str(request.args.get('scope'))
 
     # retrieve (limit) number of top tracks as a json, stored in result
     result = sp.current_user_top_tracks(limit=num, offset=0, time_range=scope)

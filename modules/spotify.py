@@ -21,6 +21,7 @@ def get_spotify_user_id():
     return spotify_user_id
 
 @spotify.route('/current_user_sp_id')
+@login_required
 def get_current_user_sp_id():
     try:
         token_info = get_token()
@@ -109,8 +110,8 @@ def redirect_page():
 """
 Method that provides the route to access the Spotify website directly to authenticate the app's connection to Spotify.
 """
-@login_required
 @spotify.route('/spotify_login')
+@login_required
 def spotify_login():
     sp_oauth = create_spotify_oauth()
     auth_url = sp_oauth.get_authorize_url()
@@ -120,8 +121,8 @@ def spotify_login():
 Method that invokes get_top_tracks_and_artists() to retrieve and display user's most listened to tracks, with provided number of 
 tracks and scope.
 """
-@login_required
 @spotify.route('/get_top_tracks', methods=['GET', 'POST'])
+@login_required
 def get_top_tracks(scope="short_term", num=10):
     try:
         token_info = get_token()
@@ -157,6 +158,21 @@ def get_top_tracks(scope="short_term", num=10):
     final_list = get_top_tracks_and_artists(num=num, result=result) # for storing final 'song' : 'artist' dictionary
     return render_template('your_top_tracks.html', tracks = final_list, current_scope = scope)
 
+
+@spotify.route('/create_playlist', methods=['GET', 'POST'])
+@login_required
+def create_playlist():
+    message = "Hi"
+    if request.method == 'POST':
+        message = request.form['playlist-type-select']
+        if message == "blank":
+            return redirect(url_for('spotify.create_empty_playlist', _external=False))
+        return render_template('create_playlist.html', message=message)
+    else:
+        return render_template('create_playlist.html', message=message)
+
+
+
 """
 Method to create an empty playlist on the user's Spotify account.
 """
@@ -170,7 +186,7 @@ def create_empty_playlist():
         return redirect(url_for("spotify_login", _external=False))
     sp = spotipy.Spotify(auth=token_info['access_token'])
     sp.user_playlist_create(get_current_user_sp_id(), "New Playlist", public=True, collaborative=False, description="blank")
-    return None# render_template('playlistCreated.html')
+    return render_template('create_playlist.html', message="Success! Blank playlist successfully created.")
 
 
 

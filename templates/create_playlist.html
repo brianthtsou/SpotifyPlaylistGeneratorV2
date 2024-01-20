@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Playlist{% endblock %}
+
+{% block content %}
+    <div id="message">{{ message }}</div>
+    <form action="{{ url_for('spotify.create_playlist')}}" method="post">
+        <select name="playlist-type-select" id="playlist-type-select">
+            <option value="discovery" name="discovery"> Discovery Playlist </option>
+            <option value="blank" name="blank"> Blank Playlist </option>
+            <option value="surprise"name="surprise"> Surprise Me! </option>
+        </select>
+        <input type="submit">
+    </form>
+{% endblock %}

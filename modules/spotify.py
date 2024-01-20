@@ -162,12 +162,15 @@ def get_top_tracks(scope="short_term", num=10):
 @spotify.route('/create_playlist', methods=['GET', 'POST'])
 @login_required
 def create_playlist():
-    message = "Hi"
+    message = "Create a new playlist here:"
     if request.method == 'POST':
         message = request.form['playlist-type-select']
         if message == "blank":
             return redirect(url_for('spotify.create_empty_playlist', _external=False))
-        return render_template('create_playlist.html', message=message)
+        elif message == "discovery":
+            return redirect(url_for('spotify.create_discovery_playlist', _external=False))
+        else: 
+            render_template('create_playlist.html', message="Playlist creation failed.")
     else:
         return render_template('create_playlist.html', message=message)
 
@@ -208,8 +211,6 @@ def create_discovery_playlist():
 
     #gets newly created playlist (0 index is the playlist that was just created)
     discovery_playlist_id = sp.current_user_playlists(limit=1, offset=0)["items"][0]["id"]
-    print(discovery_playlist_id)
-
 
     seed_tracklist = [] #list to hold seeds for recommendation function
     
@@ -225,9 +226,8 @@ def create_discovery_playlist():
     for track in range(20):
         track_id = discovery_list['tracks'][track]['id']
         add_tracklist.append(track_id)
-        print(track_id)
     # TODO: need to store tracks in a list to be added
     #TODO: need to get playlist ID of newly created playlist, so can call user_playlist_add_tracks
     sp.user_playlist_add_tracks(get_current_user_sp_id(), discovery_playlist_id, add_tracklist)
     #TODO: consolidate some of these actions into separate functions
-    return None # render_template('playlistCreated.html')
+    return render_template('create_playlist.html', message="Success! Discovery playlist successfully created.")

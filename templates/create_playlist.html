@@ -5,11 +5,19 @@
 {% block content %}
     <div id="message">{{ message }}</div>
     <form action="{{ url_for('spotify.create_playlist')}}" method="post">
-        <select name="playlist-type-select" id="playlist-type-select">
+        <select name="playlist-type-select" id="playlist-type-select" onchange="descriptionCheck(this)">
+            <option value="select-option" name="select-option" selected disabled>Select Option..</option>
             <option value="discovery" name="discovery"> Discovery Playlist </option>
             <option value="blank" name="blank"> Blank Playlist </option>
             <option value="surprise"name="surprise"> Surprise Me! </option>
         </select>
         <input type="submit">
     </form>
+    <div id="discovery-description" style="display:none">Discovery!</div>
+    <div id="blank-description" style="display:none">Blank!</div>
+    <div id="surprise-description" style="display:none">Surprise!</div>
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript" src="{{ url_for('static', filename='js/create_playlist_page.js') }}"></script>
 {% endblock %}

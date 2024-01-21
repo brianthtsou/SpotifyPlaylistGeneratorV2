@@ -43,3 +43,7 @@ def register():
         return redirect(url_for('auth.login'))
 
     return render_template('register.html', form=reg_form)
+
+@auth.route('/validate_spotify')
+def validate_spotify():
+    return redirect(url_for('spotify.spotify_login'))

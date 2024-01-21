@@ -1,17 +1,25 @@
+const discovery_desc = document.getElementById("discovery-description");
+const blank_desc = document.getElementById("blank-description");
+const surprise_desc = document.getElementById("surprise-description");
+const discovery_slider = document.getElementById("playlist-scope-slider");
+
 function descriptionCheck(that) {
     if (that.value == "discovery") {
-        document.getElementById("discovery-description").style.display = "block";
-        document.getElementById("blank-description").style.display = "none";
-        document.getElementById("surprise-description").style.display = "none";
+        discovery_desc.style.display = "block";
+        discovery_slider.style.display = "block";
+        blank_desc.style.display = "none";
+        surprise_desc.style.display = "none";
     }
     else if (that.value == "blank"){
-        document.getElementById("blank-description").style.display = "block";
-        document.getElementById("discovery-description").style.display = "none";
-        document.getElementById("surprise-description").style.display = "none";
+        blank_desc.style.display = "block";
+        discovery_desc.style.display = "none";
+        discovery_slider.style.display = "none";
+        surprise_desc.style.display = "none";
     }
     else {
-        document.getElementById("surprise-description").style.display = "block";
-        document.getElementById("blank-description").style.display = "none";
-        document.getElementById("discovery-description").style.display = "none";
+        surprise_desc.style.display = "block";
+        blank_desc.style.display = "none";
+        discovery_desc.style.display = "none";
+        discovery_slider.style.display = "none";
     }
 }

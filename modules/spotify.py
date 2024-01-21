@@ -84,11 +84,11 @@ def get_top_tracks_and_artists(num, result):
 Method to generate the list of seeds to be used in the recommendation function; seeds are pulled from the user's top tracks.
 ***UNIMPLEMENTED SO FAR***
 """
-def generate_seed_tracklist(sp):
+def generate_seed_tracklist(sp, scope):
     seed_tracklist = [] #list to hold seeds for recommendation function
     
     # pulls 20 short term top tracks from spotify as json, use as recommend function seeds
-    result = sp.current_user_top_tracks(limit=5, offset=0, time_range="short_term")
+    result = sp.current_user_top_tracks(limit=5, offset=0, time_range=scope)
     for track in range(5):
         track_id = result['items'][track]['id']
         seed_tracklist.append(track_id)
@@ -165,10 +165,18 @@ def create_playlist():
     message = "Create a new playlist here:"
     if request.method == 'POST':
         message = request.form['playlist-type-select']
+        scope_num = request.form['playlist-scope-slider']
+        scope_dict = {
+            1 : "short_term",
+            2 : "medium_term",
+            3 : "long_term"
+        }
+        scope = scope_dict[int(scope_num)]
+        
         if message == "blank":
             return redirect(url_for('spotify.create_empty_playlist', _external=False))
         elif message == "discovery":
-            return redirect(url_for('spotify.create_discovery_playlist', _external=False))
+            return redirect(url_for('spotify.create_discovery_playlist', scope=scope, _external=False))
         else: 
             render_template('create_playlist.html', message="Playlist creation failed.")
     else:
@@ -198,8 +206,8 @@ Method to generate a new playlist of songs on the user's Spotify account using t
 recommendation seeds.
 """
 @login_required
-@spotify.route('/create_discovery_playlist')
-def create_discovery_playlist():
+@spotify.route('/create_discovery_playlist/<string:scope>', methods=['GET', 'POST'])
+def create_discovery_playlist(scope):
     try:
         token_info = get_token()
     except:
@@ -213,9 +221,9 @@ def create_discovery_playlist():
     discovery_playlist_id = sp.current_user_playlists(limit=1, offset=0)["items"][0]["id"]
 
     seed_tracklist = [] #list to hold seeds for recommendation function
-    
-    # pulls 20 short term top tracks from spotify as json, use as recommend function seeds
-    result = sp.current_user_top_tracks(limit=5, offset=0, time_range="short_term")
+    print(scope)
+    # pulls 5 top tracks from spotify as json, use as recommend function seeds
+    result = sp.current_user_top_tracks(limit=5, offset=0, time_range=scope)
     for track in range(5):
         track_id = result['items'][track]['id']
         seed_tracklist.append(track_id)

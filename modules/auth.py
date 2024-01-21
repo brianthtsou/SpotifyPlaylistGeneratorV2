@@ -37,7 +37,7 @@ def register():
 
     if reg_form.validate_on_submit():
         hashed_password = bcrypt.generate_password_hash(reg_form.password.data)
-        new_user = User(username=reg_form.username.data, password=hashed_password)
+        new_user = User(username=reg_form.username.data, password=hashed_password, spotify_user_id=reg_form.spotify_id.data)
         db.session.add(new_user)
         db.session.commit()
         return redirect(url_for('auth.login'))

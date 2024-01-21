@@ -7,6 +7,7 @@ from .models import User
 class RegisterForm(FlaskForm):
     username = StringField('username', validators=[InputRequired(), Length(min=4, max=24)], render_kw={"Placeholder" : "Username"})
     password = PasswordField('password', validators=[InputRequired(), Length(min=6, max=24)], render_kw={"Placeholder" : "Password"})
+    spotify_id = StringField('spotify_id', validators=[InputRequired(), Length(min=1, max=30)], render_kw={"Placeholder" : "Spotify User ID"})
     submit = SubmitField("Register")
 
     def validate_username(self, username):

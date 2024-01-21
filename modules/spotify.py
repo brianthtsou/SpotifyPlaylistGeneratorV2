@@ -158,7 +158,10 @@ def get_top_tracks(scope="short_term", num=10):
     final_list = get_top_tracks_and_artists(num=num, result=result) # for storing final 'song' : 'artist' dictionary
     return render_template('your_top_tracks.html', tracks = final_list, current_scope = scope)
 
-
+"""
+Method that acts as a crossroads, invoking the create_playlist methods of discovery, blank, etc.; initially loads create playlist 
+selection page.
+"""
 @spotify.route('/create_playlist', methods=['GET', 'POST'])
 @login_required
 def create_playlist():
@@ -203,7 +206,7 @@ def create_empty_playlist():
 
 """
 Method to generate a new playlist of songs on the user's Spotify account using the user's top listened to songs as 
-recommendation seeds.
+recommendation seeds. The time scope 
 """
 @login_required
 @spotify.route('/create_discovery_playlist/<string:scope>', methods=['GET', 'POST'])

@@ -82,7 +82,7 @@ def get_top_tracks_and_artists(num, result):
 
 """
 Method to generate the list of seeds to be used in the recommendation function; seeds are pulled from the user's top tracks.
-***UNIMPLEMENTED SO FAR***
+Called in create_discovery_playlist() method.
 """
 def generate_seed_tracklist(sp, scope):
     seed_tracklist = [] #list to hold seeds for recommendation function
@@ -220,22 +220,16 @@ def create_discovery_playlist(scope):
     #gets newly created playlist (0 index is the playlist that was just created)
     discovery_playlist_id = sp.current_user_playlists(limit=1, offset=0)["items"][0]["id"]
 
-    seed_tracklist = [] #list to hold seeds for recommendation function
-    print(scope)
-    # pulls 5 top tracks from spotify as json, use as recommend function seeds
-    result = sp.current_user_top_tracks(limit=5, offset=0, time_range=scope)
-    for track in range(5):
-        track_id = result['items'][track]['id']
-        seed_tracklist.append(track_id)
-
+    # calls method that pulls 5 top tracks from spotify as json, use as recommend function seeds
+    seed_tracklist = generate_seed_tracklist(sp, scope) #list to hold seeds for recommendation function
+    
     # retrieves recommended tracks
     discovery_list = sp.recommendations(seed_tracks=seed_tracklist, limit=20)
     add_tracklist = [] #tracklist to be added to the playlist
     for track in range(20):
         track_id = discovery_list['tracks'][track]['id']
         add_tracklist.append(track_id)
-    # TODO: need to store tracks in a list to be added
-    #TODO: need to get playlist ID of newly created playlist, so can call user_playlist_add_tracks
+    
     sp.user_playlist_add_tracks(get_current_user_sp_id(), discovery_playlist_id, add_tracklist)
-    #TODO: consolidate some of these actions into separate functions
+    
     return render_template('create_playlist.html', message="Success! Discovery playlist successfully created.")

@@ -13,7 +13,7 @@ bcrypt = Bcrypt()
 @auth.route('/login', methods=["GET", "POST"])
 def login():
     if current_user.is_authenticated:
-       return render_template('dashboard.html')
+       return render_template('validate_spotify.html')
     else:
         form = LoginForm()
         if form.validate_on_submit():
@@ -22,7 +22,7 @@ def login():
                 if bcrypt.check_password_hash(user.password, form.password.data):
                     session['id'] = user.id
                     login_user(user)
-                    return redirect(url_for('views.dashboard'))
+                    return render_template('validate_spotify.html')
         return render_template('login.html', form=form)
 
 @auth.route('/logout',  methods=["GET", "POST"])

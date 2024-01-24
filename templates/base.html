@@ -4,73 +4,51 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>{% block title %} {% endblock %}</title>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/sidebar.css') }}" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" 
+            integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+            <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/base.css') }}" />
+        {% block stylesheets %}
+        {% endblock %}
     </head>
     <body>
-                <!-- Bootstrap Sidebar Begin -->
-                <div class="wrapper">
-                        <!-- Sidebar -->
-                        <nav id="sidebar">
-                            <div class="sidebar-header">
-                                <h3>Bootstrap Sidebar</h3>
-                            </div>
-                    
-                            <ul class="list-unstyled components">
-                                <p>Dummy Heading</p>
-                                <li class="active">
-                                    <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Home</a>
-                                    <ul class="collapse list-unstyled" id="homeSubmenu">
-                                        <li>
-                                            <a href="#">Home 1</a>
-                                        </li>
-                                        <li>
-                                            <a href="#">Home 2</a>
-                                        </li>
-                                        <li>
-                                            <a href="#">Home 3</a>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    <a href="#">About</a>
-                                </li>
-                                <li>
-                                    <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Pages</a>
-                                    <ul class="collapse list-unstyled" id="pageSubmenu">
-                                        <li>
-                                            <a href="#">Page 1</a>
-                                        </li>
-                                        <li>
-                                            <a href="#">Page 2</a>
-                                        </li>
-                                        <li>
-                                            <a href="#">Page 3</a>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    <a href="#">Portfolio</a>
-                                </li>
-                                <li>
-                                    <a href="#">Contact</a>
-                                </li>
-                            </ul>
-                        </nav>
-                    
-        <!-- Bootstrap Sidebar End -->
+        <header>
+            <nav class="navbar navbar-expand-lg bg-body">
+                <div class="container-fluid">
+                  <button
+                    data-mdb-collapse-init
+                    class="navbar-toggler"
+                    type="button"
+                    data-mdb-target="#navbarExample01"
+                    aria-controls="navbarExample01"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation"
+                  >
+                    <i class="fas fa-bars"></i>
+                  </button>
+                  <div class="collapse navbar-collapse" id="navbarExample01">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                      <li class="nav-item active">
+                        <a class="nav-link" aria-current="page" href="#">Logout</a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </nav>
+              <!-- Navbar -->
+            <!-- Jumbotron -->
+            <div id="header" class="p-5 text-center bg-body-tertiary">
+              <h1 class="mb-3">Spotify Playlist Generator</h1>
+              <h4 class="mb-3">Subheading</h4>
+              {% block home_button %}{% endblock %}
+              <a data-mdb-ripple-init class="btn btn-primary" href="" role="button">Return</a>
+            </div>
+            <!-- Jumbotron -->
+          </header>
+
+
+
 
         <div id="content">
-            <nav class="navbar navbar-expand-lg navbar-light bg-light">
-                <div class="container-fluid">
-        
-                    <button type="button" id="sidebarCollapse" class="btn btn-info">
-                        <i class="fas fa-align-left"></i>
-                        <span>Toggle Sidebar</span>
-                    </button>
-        
-                </div>
-            </nav>
             <nav class="navbar">
                 <ul>
                     <li><a href="{{url_for('views.dashboard')}}">Dashboard</a></li>

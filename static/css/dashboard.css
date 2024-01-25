@@ -1,22 +1,55 @@
 .btn-square-md {
-    width: 300px !important;
-    max-width: 100% !important;
-    max-height: 100% !important;
-    height: 300px !important;
-    text-align: center;
-    padding: 0px;
-    font-size:12px;
-    }
+  width: 300px !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  height: 300px !important;
+  text-align: center;
+  padding: 0px;
+  font-size: 12px;
+}
 
 #spotify-button {
-    background-color: #1DB954 !important;
+  background-color: #1db954 !important;
 }
 
 #settings-button {
-    background-color: #A0A0A0 !important;
+  background-color: #a0a0a0 !important;
+}
+
+#collage-button {
+  background-color: #1db954 !important;
+}
+
+#about-button {
+  background-color: #a0a0a0 !important;
 }
 
 .container {
-    margin-top: 50px !important;
-    /* margin-left: 32vh !important; */
+  margin-top: 50px !important;
+  /* margin-left: 32vh !important; */
+}
+
+.button-description {
+  font-size: 24px;
+  padding-left: 35px;
+}
+
+#spotify-button-description {
+  padding-left: 0px;
+}
+
+#account-settings-description {
+  padding-left: 35px;
+}
+
+#top-tracks-button-description {
+  padding-inline-end: 100px;
+}
+
+#album-collage-button-description {
+  padding-left: 45px;
+}
+
+#about-button-description {
+  padding-left: 0px;
 }

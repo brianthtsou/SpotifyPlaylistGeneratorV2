@@ -1,0 +1,22 @@
+#tracklist-container {
+  text-align: center;
+}
+
+ol {
+  display: inline-block;
+  text-align: left;
+}
+
+li span {
+  position: relative;
+  left: 20px;
+  /* border: 10px solid transparent; */
+}
+
+.slidecontainer {
+  text-align: center;
+}
+
+input[type="range"] {
+  width: 400px;
+}

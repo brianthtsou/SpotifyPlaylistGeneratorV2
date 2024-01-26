@@ -1,27 +1,65 @@
-{% extends 'base.html' %}
-
-{% block title %}Create Playlist{% endblock %}
-
-{% block content %}
-    <div id="message">{{ message }}</div>
+{% extends 'base.html' %} {% block title %}Create Playlist{% endblock %} {%
+block content %} {% block stylesheets %}<link
+  rel="stylesheet"
+  type="text/css"
+  href="{{ url_for('static', filename='css/create_playlist.css') }}"
+/>
+{% endblock %}
+<div id="container">
+  <div id="message">{{ message }}</div>
+  <div>
     <form action="{{ url_for('spotify.create_playlist')}}" method="post">
-        <select name="playlist-type-select" id="playlist-type-select" onchange="descriptionCheck(this)">
-            <option value="select-option" name="select-option" selected disabled>Select Option..</option>
-            <option value="discovery" name="discovery"> Discovery Playlist </option>
-            <option value="blank" name="blank"> Blank Playlist </option>
-            <option value="surprise"name="surprise"> Surprise Me! </option>
-        </select>
-        <input style="display:none" type="range" min="1" max="3" value="1" 
-            class="slider" name="playlist-scope-slider" id="playlist-scope-slider"
-            onchange="sliderOutput(this)">
-        <div id="playlist-scope-slider-output" name="playlist-scope-slider-output" style="display:none">Short Term</div>
-        <input type="submit">
+      <select
+        name="playlist-type-select"
+        id="playlist-type-select"
+        onchange="descriptionCheck(this)"
+      >
+        <option value="select-option" name="select-option" selected disabled>
+          Select Option..
+        </option>
+        <option value="discovery" name="discovery">Discovery Playlist</option>
+        <option value="blank" name="blank">Blank Playlist</option>
+        <option value="surprise" name="surprise">Surprise Me!</option>
+      </select>
+      <div id="slide-container">
+        <input
+          style="display: none; text-align: center"
+          type="range"
+          min="1"
+          max="3"
+          value="1"
+          class="slider"
+          name="playlist-scope-slider"
+          id="playlist-scope-slider"
+          onchange="sliderOutput(this)"
+        />
+      </div>
+      <div
+        id="playlist-scope-slider-output"
+        name="playlist-scope-slider-output"
+        style="display: none"
+      >
+        Short Term
+      </div>
+      <input type="submit" />
     </form>
-    <div id="discovery-description" style="display:none">Discovery!</div>
-    <div id="blank-description" style="display:none">Blank!</div>
-    <div id="surprise-description" style="display:none">Surprise!</div>
-{% endblock %}
-
-{% block scripts %}
-<script type="text/javascript" src="{{ url_for('static', filename='js/create_playlist_page.js') }}"></script>
-{% endblock %}
+    <div id="discovery-description" style="display: none">Discovery!</div>
+    <div id="blank-description" style="display: none">Blank!</div>
+    <div id="surprise-description" style="display: none">Surprise!</div>
+  </div>
+  {% endblock %} {% block scripts %}
+  <script
+    type="text/javascript"
+    src="{{ url_for('static', filename='js/create_playlist_page.js') }}"
+  ></script>
+  {% endblock %}
+</div>
+{% block home_button %}
+<a
+  data-mdb-ripple-init
+  class="btn btn-primary"
+  href="{{ url_for('views.dashboard')}}"
+  role="button"
+  >Return</a
+>
+{% endblock %} {% block pagename %} Playlist Creation {% endblock %}

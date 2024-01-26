@@ -1,13 +1,16 @@
-{% extends 'base.html' %}
-
-{% block title %}Account Settings{% endblock %}
-
-{% block content %}
-    <div>
-        <form method="POST" action="">
-            {{ form.hidden_tag() }}
-            {{ form.spotify_user_id }}
-            {{ form.submit }}
-        </form>
-    </div>
-{% endblock %}
+{% extends 'base.html' %} {% block title %}Account Settings{% endblock %} {%
+block content %}
+<div>
+  <form method="POST" action="">
+    {{ form.hidden_tag() }} {{ form.spotify_user_id }} {{ form.submit }}
+  </form>
+</div>
+{% endblock %} {% block home_button %}
+<a
+  data-mdb-ripple-init
+  class="btn btn-primary"
+  href="{{ url_for('views.dashboard')}}"
+  role="button"
+  >Return</a
+>
+{% endblock %} {% block pagename %}Account Settings{% endblock %}

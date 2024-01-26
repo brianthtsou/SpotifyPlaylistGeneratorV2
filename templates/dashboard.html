@@ -6,13 +6,11 @@ stylesheets %}
   href="{{ url_for('static', filename='css/dashboard.css') }}"
 />
 {% endblock %} {% block content %}
-<div>
-  <h1>Hello, you are logged in!</h1>
+<br />
+<div id="logged-in">
+  <h2>Hello, you are logged in!</h2>
   <h3>Your Spotify User ID: {{spotify_user_id}}</h3>
 </div>
-<a href="{{url_for('auth.logout')}}">
-  <button>Logout</button>
-</a>
 <div class="container">
   <div class="row">
     <div class="col-sm-4 mx-auto">

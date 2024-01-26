@@ -1,32 +1,56 @@
-{% extends 'base.html' %}
-
-{% block title %}Your Top Tracks{% endblock %}
-
-{% block content %}
-    <div>
-        <h1>Hello, you are logged in! </h1>
-        <h3>Your Spotify User ID: {{spotify_user_id}}</h3>
-    </div>
-    <a href="{{url_for('auth.logout')}}">
-        <button>Logout</button>
-    </a>
-    <ol>
-        {% for track, artists in tracks.items() %}
-            <li><b>{{ track }}</b> - {{ artists }}</li>
-        {% endfor %}
-    </ol>
-    <div class="slidecontainer">
-        <form action="{{ url_for('spotify.get_top_tracks')}}" method="post">
-            <input type="range" min="1" max="3" value="1" class="slider" name="scope-slider" id="scope-slider">
-            <div id="scope-slider-output"></div>
-            <input type="range" min="5" max="20" value="10" class="slider" name="num-slider" id="num-slider">
-            <div id="num-slider-output"></div>
-            <input type="submit">
-        </form>
-    </div>
-{% endblock %}
-
-{% block scripts %}
-<script type="text/javascript" src="{{ url_for('static', filename='js/get_top_tracks.js') }}"></script>
-{% endblock %}
-
+{% extends 'base.html' %} {% block stylesheets %}
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{{ url_for('static', filename='css/your_top_tracks.css') }}"
+/>{% endblock %} {% block title %}Your Top Tracks{% endblock %} {% block content
+%}
+<div id="tracklist-container">
+  <br />
+  <ol>
+    {% for track, artists in tracks.items() %}
+    <li>
+      <span><b>{{ track }}</b> - {{ artists }}</span>
+    </li>
+    {% endfor %}
+  </ol>
+</div>
+<div class="slidecontainer">
+  <form action="{{ url_for('spotify.get_top_tracks')}}" method="post">
+    <input
+      type="range"
+      min="1"
+      max="3"
+      value="1"
+      class="slider"
+      name="scope-slider"
+      id="scope-slider"
+    />
+    <div id="scope-slider-output"></div>
+    <input
+      type="range"
+      min="5"
+      max="20"
+      value="10"
+      class="slider"
+      name="num-slider"
+      id="num-slider"
+    />
+    <div id="num-slider-output"></div>
+    <input type="submit" value="Change" />
+  </form>
+</div>
+{% endblock %} {% block scripts %}
+<script
+  type="text/javascript"
+  src="{{ url_for('static', filename='js/get_top_tracks.js') }}"
+></script>
+{% endblock %} {% block home_button %}
+<a
+  data-mdb-ripple-init
+  class="btn btn-primary"
+  href="{{ url_for('views.dashboard')}}"
+  role="button"
+  >Return</a
+>
+{% endblock %} {% block pagename %}Your Top Listened To Tracks{% endblock %}

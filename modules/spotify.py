@@ -7,7 +7,12 @@ import os
 from dotenv import load_dotenv
 import time
 from datetime import date
+import json
 
+with open('modules\genres.json', 'r') as genre_file:
+    genres = json.load(genre_file)
+
+genre_list = genres["genres"]
 
 spotify = Blueprint('spotify', __name__)
 
@@ -206,7 +211,7 @@ def create_empty_playlist():
 
 """
 Method to generate a new playlist of songs on the user's Spotify account using the user's top listened to songs as 
-recommendation seeds. The time scope 
+recommendation seeds. The time scope can be selected by the user.
 """
 @login_required
 @spotify.route('/create_discovery_playlist/<string:scope>', methods=['GET', 'POST'])
@@ -236,3 +241,36 @@ def create_discovery_playlist(scope):
     sp.user_playlist_add_tracks(get_current_user_sp_id(), discovery_playlist_id, add_tracklist)
     
     return render_template('create_playlist.html', message="Success! Discovery playlist successfully created.")
+
+
+"""
+Method to generate a new playlist of songs on the user's Spotify account using selected genres.
+"""
+@login_required
+@spotify.route('/create_genre_mix_playlist', methods=['GET', 'POST'])
+def create_genre_mix_playlist(genres):
+    try:
+        token_info = get_token()
+    except:
+        print("User not logged in")
+        return redirect(url_for("spotify_login", _external=False))
+    sp = spotipy.Spotify(auth=token_info['access_token'])
+    today = str(date.today())
+    sp.user_playlist_create(get_current_user_sp_id(), f"Genre Mix - {today}", public=True, collaborative=False, description=f"{today}")
+
+    #gets newly created playlist (0 index is the playlist that was just created)
+    genre_mix_playlist_id = sp.current_user_playlists(limit=1, offset=0)["items"][0]["id"]
+
+    # calls method that pulls 5 top tracks from spotify as json, use as recommend function seeds
+    seed_list = [] #list to hold seeds for recommendation function
+    
+    # retrieves recommended tracks
+    genre_mix_list = sp.recommendations(seed_tracks=seed_list, limit=20)
+    add_tracklist = [] #tracklist to be added to the playlist
+    for track in range(20):
+        track_id = genre_mix_list['tracks'][track]['id']
+        add_tracklist.append(track_id)
+    
+    sp.user_playlist_add_tracks(get_current_user_sp_id(), genre_mix_playlist_id, add_tracklist)
+    
+    return render_template('create_playlist.html', message="Success! Genre Mix playlist successfully created.")

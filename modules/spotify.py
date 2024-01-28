@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 import time
 from datetime import date
 import json
+import ast
 
 with open('modules\genres.json', 'r') as genre_file:
     genres = json.load(genre_file)
@@ -180,13 +181,19 @@ def create_playlist():
             3 : "long_term"
         }
         scope = scope_dict[int(scope_num)]
+
+        genres_selected = request.form.getlist('genre-select')
+        genre_string = ''.join(genres_selected)
+
         
         if message == "blank":
             return redirect(url_for('spotify.create_empty_playlist', _external=False))
         elif message == "discovery":
             return redirect(url_for('spotify.create_discovery_playlist', scope=scope, _external=False))
+        elif message == "genre-mix":
+            return redirect(url_for('spotify.create_genre_mix_playlist', genres=genres_selected, _external=False))
         else: 
-            render_template('create_playlist.html', message="Playlist creation failed.")
+            render_template('create_playlist.html', message="Playlist creation failed.", genres=genre_list)
     else:
         return render_template('create_playlist.html', message=message, genres=genre_list)
 
@@ -205,7 +212,7 @@ def create_empty_playlist():
         return redirect(url_for("spotify_login", _external=False))
     sp = spotipy.Spotify(auth=token_info['access_token'])
     sp.user_playlist_create(get_current_user_sp_id(), "New Playlist", public=True, collaborative=False, description="blank")
-    return render_template('create_playlist.html', message="Success! Blank playlist successfully created.")
+    return render_template('create_playlist.html', message="Success! Blank playlist successfully created.", genres=genre_list)
 
 
 
@@ -240,14 +247,14 @@ def create_discovery_playlist(scope):
     
     sp.user_playlist_add_tracks(get_current_user_sp_id(), discovery_playlist_id, add_tracklist)
     
-    return render_template('create_playlist.html', message="Success! Discovery playlist successfully created.")
+    return render_template('create_playlist.html', message="Success! Discovery playlist successfully created.", genres=genre_list)
 
 
 """
 Method to generate a new playlist of songs on the user's Spotify account using selected genres.
 """
 @login_required
-@spotify.route('/create_genre_mix_playlist', methods=['GET', 'POST'])
+@spotify.route('/create_genre_mix_playlist/<genres>', methods=['GET', 'POST'])
 def create_genre_mix_playlist(genres):
     try:
         token_info = get_token()
@@ -262,10 +269,11 @@ def create_genre_mix_playlist(genres):
     genre_mix_playlist_id = sp.current_user_playlists(limit=1, offset=0)["items"][0]["id"]
 
     # calls method that pulls 5 top tracks from spotify as json, use as recommend function seeds
-    seed_list = [] #list to hold seeds for recommendation function
-    
+    seed_list = genres #list to hold seeds for recommendation function
+    formatted_seed_list = ast.literal_eval(seed_list)
+
     # retrieves recommended tracks
-    genre_mix_list = sp.recommendations(seed_tracks=seed_list, limit=20)
+    genre_mix_list = sp.recommendations(seed_genres=formatted_seed_list, limit=20)
     add_tracklist = [] #tracklist to be added to the playlist
     for track in range(20):
         track_id = genre_mix_list['tracks'][track]['id']
@@ -273,4 +281,4 @@ def create_genre_mix_playlist(genres):
     
     sp.user_playlist_add_tracks(get_current_user_sp_id(), genre_mix_playlist_id, add_tracklist)
     
-    return render_template('create_playlist.html', message="Success! Genre Mix playlist successfully created.")
+    return render_template('create_playlist.html', message="Success! Genre Mix playlist successfully created.", genres=genre_list)

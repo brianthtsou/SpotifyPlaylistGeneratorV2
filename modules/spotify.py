@@ -188,7 +188,7 @@ def create_playlist():
         else: 
             render_template('create_playlist.html', message="Playlist creation failed.")
     else:
-        return render_template('create_playlist.html', message=message)
+        return render_template('create_playlist.html', message=message, genres=genre_list)
 
 
 

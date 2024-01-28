@@ -41,6 +41,18 @@ block content %} {% block stylesheets %}<link
       >
         Short Term
       </div>
+      <select
+        style="display: none; text-align: center"
+        multiple
+        name="genre-select"
+        size="10"
+        id="genre-select"
+      >
+        {% for genre in genres %}
+        <option value="{{genre}}">{{ genre.capitalize() }}</option>
+        {% endfor %}
+      </select>
+      <br />
       <input type="submit" />
     </form>
     <div id="discovery-description" style="display: none">Discovery!</div>
